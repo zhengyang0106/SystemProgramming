@@ -11,39 +11,61 @@
 #include<pwd.h>
 #include<math.h>
 #include<string.h>
-#define PATH_SIZE 10
+#include<signal.h>
+#define PATH_SIZE 100
 
-int main(){
-    char hostname[60] = {'\0'};
-    struct passwd *pwd;
-    char buf[80];//存放路径
-    gethostname(hostname, sizeof(hostname));//获取主机名
-    pwd = getpwuid(getuid());//先用getuid()获取id号  通过 getwuid()函数通过uid 查看用户的passwd数据  获取用户名
-    getcwd(buf,sizeof(buf)); //把当前工作的绝对路径 复制到buf的数组里
-    
-    printf("\033[31m%s@%s:%s\n\033[0m",pwd->pw_name,hostname,buf);
-    
-   /* struct passwd *qwe;
-    qwe = getpwuid(getuid());
-    printf("%s\n",qwe->pw_passwd);   //获取密码
-    */
+char buf[80];//存放路径
+struct passwd *pwd;
+char hostname[60] = {'\0'};
+void  cd_command() {
 
-    char str1[2];
+    char str1[10];
     char path[PATH_SIZE];
     int res;
-    memset(path,'\0',PATH_SIZE);//初始化ｐａｔｈ数组
+    memset(path,'\0',PATH_SIZE);                                         //初始化ｐａｔｈ数组
+
+    while(~ scanf("%s", str1)) {
+        if (!strcmp(str1,"exit")) break;
+        scanf(" %s",path);
+        if (!strcmp(str1, "cd")) {
+             res =  chdir(path);
+            if(res != 0)
+               printf("%s is not a path,please check again\n",path);
+         }
+        else  printf("%s is not a command,please check\n",str1);
+
+    getcwd(buf,sizeof(buf)); //把当前工作的绝对路径 复制到buf的数组里 
+   if(strlen(buf) < strlen("/home/zhengyang")) 
+    printf("\033[31m%s@%s:%s\n\033[0m",pwd->pw_name,hostname,buf);
+    else printf("\033[31m%s@%s:~%s\n\033[0m",pwd->pw_name,hostname,buf + strlen("/home/zhengyang"));
+         
+   }
+}
+
+void get_password() {
+    
+   struct passwd *qwe;
+    qwe = getpwuid(getuid());
+    printf("%s\n",qwe->pw_passwd);                                       //获取密码
+}
 
 
-     scanf("%s %s", str1, path);
-    if (!strcmp(str1, "cd")) {
-      res =  chdir(path);
-      if(res != 0)
-       printf("%s is not a path,please check again\n",path);
-    }
-    else printf("%s is not a command,please check\n",str1);
+void get_username_hostname_path() {  
 
-      getcwd(buf,sizeof(buf)); //把当前工作的绝对路径 复制到buf的数组里
-      printf("\033[33m%s@%s:%s\n\033[0m",pwd->pw_name,hostname,buf);
+    gethostname(hostname, sizeof(hostname));                             //获取主机名
+    pwd = getpwuid(getuid());                                            //先用getuid()获取id号  通过 getwuid()函数通过uid 查看用户的passwd数据  获取用户名
+    getcwd(buf,sizeof(buf)); //把当前工作的绝对路径 复制到buf的数组里 
+   if(strlen(buf) < strlen("/home/zhengyang")) 
+    printf("\033[31m%s@%s:%s\n\033[0m",pwd->pw_name,hostname,buf);
+    else printf("\033[31m%s@%s:~%s\n\033[0m",pwd->pw_name,hostname,buf + strlen("/home/zhengyang"));
+}
+
+
+
+int main(){
+    signal(SIGINT,SIG_IGN);
+get_username_hostname_path();
+cd_command();
 
     return 0;
 }
