@@ -30,7 +30,7 @@ unsigned long simple_strtoul(const char *cp,char **endp,unsigned int base)
 		}
 	}
 	while (isxdigit(*cp) && (value = isdigit(*cp) ? *cp-'0' : (islower(*cp)     //  判断是不是cp指向 16 进制字符    并且 判断字符满足 自己的进制base  
-	    ? toupper(*cp) : *cp)-'A'+10) < base) {                                 
+	    ? toupper(*cp) : *cp)-'A'+10) < base) {
 		result = result*base + value;                                           //把字符转换为 base进制的 无符号长整形
 		cp++;
 	}
@@ -183,7 +183,7 @@ int vsprintf(char *buf, const char *fmt, va_list args)
 			++fmt;
 		}
 
-		switch (*fmt) {                                                         
+		switch (*fmt) {
 		case 'c':                                                               //字符型
 			if (!(flags & LEFT))                                                //如果不是左对齐  先输出空格
 				while (--field_width > 0)
