@@ -180,7 +180,7 @@ void ls_w(char* test){
 void ls(){
   char name[PATH_SIZE][PATH_SIZE];
     //char *p;
-   // getcwd(buf,sizeof(buf));
+   getcwd(buf,sizeof(buf));
     DIR *dir;
     struct dirent *dir_info;
     int i = 0;
@@ -263,8 +263,8 @@ printf("\n");
 
 int main(int argc,char* argv[]){
 
-   // ls();
-    char buf1[80];
+   ls();
+  /*  char buf1[80];
     getcwd(buf1,sizeof(buf1));
     int a = argc;
     if(a >1) { 
@@ -276,8 +276,9 @@ int main(int argc,char* argv[]){
          //  printf("%s\n" ,argv[a]);
         } else {
             printf("%s :\n", argv[a]);
-            ls();
-            printf("\n");
+         //   printf("\n");
+         //   ls();
+         //   printf("\n");
             ls_al();
             printf("\n");
             chdir(buf1);
@@ -286,10 +287,11 @@ int main(int argc,char* argv[]){
     }
     else {
         getcwd(buf,sizeof(buf));
-        ls();
+     //   printf("\n");
+      //  ls();
         printf("\n");
         ls_al();
-    }
+    }*/
 
     return 0;
 }
