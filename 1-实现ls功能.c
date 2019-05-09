@@ -174,32 +174,13 @@ void ls_w(char* test){
             printf("\n");
     
 }
-/*
-int name_max_len(char* name) {
-    int j = 0;
-    if(strlen(name) > j) j = strlen(name);
-    return j;
-}*/
-
-/*
-
-void print_row_col(char* name[0], int expect_row, int expect_col, int z, int name_max) {
-    int i = 0;
-    while(i < z){
-        printf("%s  ",name[i]);
-        if(!((i + 1) / expect_col)) printf("\n");
-    }
-
-
-}*/
-
 
 
 
 void ls(){
   char name[PATH_SIZE][PATH_SIZE];
     //char *p;
-    getcwd(buf,sizeof(buf));
+   // getcwd(buf,sizeof(buf));
     DIR *dir;
     struct dirent *dir_info;
     int i = 0;
@@ -209,15 +190,19 @@ void ls(){
         strcpy (name[i++],dir_info->d_name);
     closedir(dir);
     //文件排序
-    qsort(name,i,sizeof(name[0]) , comp); 
+    qsort(name,i,sizeof(name[0]), comp);                    //???
     int z = i;
     int p = z;
+
+
+//    while(--i >=0) printf("%-s\n",name[i]);
   unsigned int name_max = 0;
-    while(--i >= 0){
-     if(strlen(name[i]) > name_max)  
-        name_max = strlen(name[i]);
+    while(--z >= 0){                                 //??                 
+     if(strlen(name[z]) > name_max)  
+        name_max = strlen(name[z]);
+      //  printf("%-s = %lu\n",name[z],strlen(name[z]));
     }
-printf("%d\n", name_max);// 名字最宽值
+ // printf("name_max=%d\n", name_max);// 名字最宽值
 
   struct winsize size;  
     if (isatty(STDOUT_FILENO) == 0)  
@@ -226,63 +211,45 @@ printf("%d\n", name_max);// 名字最宽值
     {
         perror("ioctl TIOCGWINSZ error");
         exit(1);
-    } 
+    }
+    int rows = size.ws_row;
+    int columns = size.ws_col;
+   // printf("%d %d ",rows ,columns);
 
-printf("%d rows, %d columns\n", size.ws_row, size.ws_col); 
-    int rows = size.ws_row;                             //屏幕长
-printf("%d\n",rows);
-    int columns = size.ws_col;//屏幕宽度
-    int MIN_COL = 3;  //一个文件名最少占三个位置
-    unsigned int col = floor(columns / MIN_COL); //输出的列数
-printf("输出列数=%d\n",col);
-printf("columns=%d\n",columns);
-    while(1){ 
-    int name_sum = 0;//宽度和
-    int name_2 =0;    
-        for(int i = 0; i < col; i++) {
-    int name_1 = 0;//每列最大宽度
-            for(int j = i; j < p; j += col) {
-                if(strlen(name[j]) > name_1 && strlen(name[j])) 
-                    name_1 = strlen(name[j]);
- printf("name1 =%d\n",name_1);
+    int cols = ceil(columns / name_max);
+   // printf("cols = %d\n",cols);
+//printf("p = %d\n",p);
+    int a[1000] = {0};
+    int name_sum2 = 0;
+while(1) {
+    for(int i = 0; i < cols; i++) {
 
-            }
-            name_sum += name_1;
-printf("name_12sum=%d\n",name_sum);
+        for(int j = i; j < p ; j += cols) {
+            if(strlen(name[j]) > a[i])
+            a[i] = strlen(name[j])+2;
+            name_sum2 =name_sum2 +  strlen(name[j]) + 2;
         }
-        if(name_sum < columns && name_max < (columns / col)) break;
-     //   if(!strlen(name[i]))  break;
-        col--;
-        
+  //      printf("a[i]= %d\n",a[i]);
     }
+if(name_sum2 < columns) break;
+int b =0;
+for(int i = 0; i < cols; i++)
+    b += a[i];
+int c = columns -b;
+   // int o = ceil(p /cols);  //
+   // if(o <= 1) break;
 
-printf("col--= %d",col);
-
-/*
-int col_name_max_len[col];   //存储每列 最长的名字宽度
-for(int i = 0; i < col; i++){
-    int name_len = 0;
-    for(int j = i; j < z; j += col) {
-        if(strlen(name[j]) > name_len) 
-            name_len = strlen(name[j]);
-    }
-    col_name_max_len[i] = name_len + 2;//使得每列输出都会至少有2空格
+if(c > name_max) cols++;
+else break;
 }
-
-for(int i = 0; i < z; i++) {
-    int j = i + 1;
-    if(!(j % col)) printf("\n");
-    printf("%-s",name[i]);
-    int b = col_name_max_len[i] - strlen(name[i]);
-    printf("%d",b);
-   //while((col_name_max_len[i] - strlen(name[i]))--)
-   // putchar(' ');
-
-
+ //  for(int j =0; j < cols; j++)
+   for( int i = 0; i < p; i++ ){
+       
+       printf("%-*s",a[i % cols],name[i]);
+       if(!((i+1) % cols)) printf("\n");
+   }
+printf("\n");
 }
-*/
-}
-
 
 
 
@@ -296,8 +263,8 @@ for(int i = 0; i < z; i++) {
 
 int main(int argc,char* argv[]){
 
-    ls();
-  /*  char buf1[80];
+   // ls();
+    char buf1[80];
     getcwd(buf1,sizeof(buf1));
     int a = argc;
     if(a >1) { 
@@ -309,6 +276,8 @@ int main(int argc,char* argv[]){
          //  printf("%s\n" ,argv[a]);
         } else {
             printf("%s :\n", argv[a]);
+            ls();
+            printf("\n");
             ls_al();
             printf("\n");
             chdir(buf1);
@@ -317,8 +286,10 @@ int main(int argc,char* argv[]){
     }
     else {
         getcwd(buf,sizeof(buf));
+        ls();
+        printf("\n");
         ls_al();
     }
-*/
+
     return 0;
 }
