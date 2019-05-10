@@ -190,16 +190,18 @@ void ls(){
         strcpy (name[i++],dir_info->d_name);
     closedir(dir);
     //文件排序
-    qsort(name,i,sizeof(name[0]), comp);                    //???
+    qsort(name,i,sizeof(name[0]), comp);                
     int z = i;
     int p = z;
 
 
 //    while(--i >=0) printf("%-s\n",name[i]);
   unsigned int name_max = 0;
-    while(--z >= 0){                                 //??                 
+    int name_sum = 0;
+    while(--z >= 0){                                                  
      if(strlen(name[z]) > name_max)  
         name_max = strlen(name[z]);
+        name_sum += strlen(name[z]);
       //  printf("%-s = %lu\n",name[z],strlen(name[z]));
     }
  // printf("name_max=%d\n", name_max);// 名字最宽值
@@ -219,44 +221,31 @@ void ls(){
     int cols = ceil(columns / name_max);
    // printf("cols = %d\n",cols);
 //printf("p = %d\n",p);
-    int a[1000] = {0};
-    int name_sum2 = 0;
+    int a[100] = {0};
 while(1) {
     for(int i = 0; i < cols; i++) {
 
         for(int j = i; j < p ; j += cols) {
             if(strlen(name[j]) > a[i])
-            a[i] = strlen(name[j])+2;
-            name_sum2 =name_sum2 +  strlen(name[j]) + 2;
+            a[i] = strlen(name[j]);
         }
   //      printf("a[i]= %d\n",a[i]);
     }
-if(name_sum2 < columns) break;
-int b =0;
-for(int i = 0; i < cols; i++)
+    if(name_sum < columns) break;
+    int b =0;
+    for(int i = 0; i < cols; i++)
     b += a[i];
-int c = columns -b;
-   // int o = ceil(p /cols);  //
-   // if(o <= 1) break;
-
-if(c > name_max) cols++;
-else break;
+    int c = columns -b;
+    if(c > name_max) cols++;
+    else break;
 }
- //  for(int j =0; j < cols; j++)
-   for( int i = 0; i < p; i++ ){
+    for( int i = 0; i < p; i++ ){
        
-       printf("%-*s",a[i % cols],name[i]);
+       printf("%-*s",a[i % cols] + 2,name[i]);
        if(!((i+1) % cols)) printf("\n");
    }
-printf("\n");
+    printf("\n");
 }
-
-
-
-
-
-
-
 
 
 
@@ -264,7 +253,7 @@ printf("\n");
 int main(int argc,char* argv[]){
 
    ls();
-  /*  char buf1[80];
+ /*   char buf1[80];
     getcwd(buf1,sizeof(buf1));
     int a = argc;
     if(a >1) { 
@@ -291,7 +280,7 @@ int main(int argc,char* argv[]){
       //  ls();
         printf("\n");
         ls_al();
-    }*/
-
+    }
+*/
     return 0;
 }
