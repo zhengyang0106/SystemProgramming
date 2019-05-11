@@ -35,3 +35,5 @@
 
 ![ls 2](https://github.com/zhengyang0106/SystemProgramming/blob/master/ls%202.png?raw=true)
 
+![cp功能](https://github.com/zhengyang0106/SystemProgramming/blob/master/cp%20%E6%96%87%E4%BB%B6.png?raw=true)
+
